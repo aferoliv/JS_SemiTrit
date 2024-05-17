@@ -25,8 +25,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initialize Charts
   const charts = {
-    realTimeChart: new Chart(elements.realTimeChartCtx, createChartConfig('Real-time Data', 'Read Number', 'pH Value')),
-    experimentChart: new Chart(elements.experimentChartCtx, createChartConfig('Experiment Data', 'Volume', 'pH Value'))
+    realTimeChart: new Chart(elements.realTimeChartCtx, createChartConfig('', 'Read Number', 'pH Value')),
+    experimentChart: new Chart(elements.experimentChartCtx, createChartConfig('', 'Volume', 'pH Value'))
   };
 
   // Initialize Equipment Options
@@ -188,8 +188,13 @@ document.addEventListener("DOMContentLoaded", () => {
   function createChartConfig(label, xAxisLabel, yAxisLabel) {
     return {
       type: 'scatter',
-      data: { datasets: [{ label, data: [], backgroundColor: 'rgba(75, 192, 192, 1)', borderColor: 'rgba(75, 192, 192, 1)', showLine: true }] },
+      data: { datasets: [{ label, data: [], backgroundColor: 'rgba(13, 202, 240, 1)', borderColor: 'rgba(13, 202, 240, 1)', showLine: true, borderWidth: 1, pointRadius: 3 }] },
       options: {
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
         scales: {
           x: { type: 'linear', position: 'bottom', title: { display: true, text: xAxisLabel } },
           y: { title: { display: true, text: yAxisLabel } }
