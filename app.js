@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Start reading serial data at a constant rate
   function startSerialReading() {
-    readTimer = setInterval(readSerialData, 1000); // Read data every second
+    readTimer = setInterval(readSerialData, 500); // Read data every second
     readIntervalSelect.addEventListener('change', updateReadInterval);
     maxPointsInput.addEventListener('change', updateRealTimeChartPoints);
   }
