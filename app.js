@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Start reading serial data at a constant rate
   function startSerialReading() {
-    readTimer = setInterval(readSerialData, 1250); // Read data every second
+    readTimer = setInterval(readSerialData, 1000); // Read data every second
     readIntervalSelect.addEventListener('change', updateReadInterval);
     maxPointsInput.addEventListener('change', updateRealTimeChartPoints);
   }
@@ -230,6 +230,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (parts.length !== 2) {
       console.warn("Invalid data format:", dataStr);
       return null;
+    }
+    
+    pH = parseFloat(parts[0]),
+    temperature = parseFloat(parts[1])
+
+    //Check if pH Value is within reasonable range
+    if (pH < 1 || pH > 14) {
+      console.warn("Invalid pH Value:", pH);
+      return null
     }
 
     return {
