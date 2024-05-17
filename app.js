@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function initializeOptions() {
     // Example equipment list
     const equipments = [
-      { name: "pH Meter 1", baudRate: 9600, dataBits: 8, stopBits: 1, parity: "none" },
+      { name: "Lucadema - LUCA210 - Escala pH", baudRate: 9600, dataBits: 8, stopBits: 1, parity: "none" },
       { name: "pH Meter 2", baudRate: 19200, dataBits: 8, stopBits: 1, parity: "none" }
     ];
     equipments.forEach(equipment => {
@@ -225,17 +225,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Parse incoming data string
   function parseData(dataStr) {
-    // Assuming dataStr format: "05/16/24 22:53:31,9.26,20.2"
+    // Assuming dataStr format: "6.154 , 25.0"
     const parts = dataStr.split(',');
-    if (parts.length !== 3) {
+    if (parts.length !== 2) {
       console.warn("Invalid data format:", dataStr);
       return null;
     }
 
     return {
-      timestamp: parts[0],
-      pH: parseFloat(parts[1]),
-      temperature: parseFloat(parts[2])
+      //timestamp: parts[0],
+      pH: parseFloat(parts[0]),
+      temperature: parseFloat(parts[1])
     };
   }
 
