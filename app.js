@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let port;
   let reader;
+  let buffer = '';
   let readTimer;
   let updateTimer;
   let lastValidData = null; // Store the last valid data read
@@ -145,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Start reading serial data at a constant rate
   function startSerialReading() {
-    readTimer = setInterval(readSerialData, 1500); // Read data every second
+    readTimer = setInterval(readSerialData, 1000); // Read data every second
     readIntervalSelect.addEventListener('change', updateReadInterval);
     maxPointsInput.addEventListener('change', updateRealTimeChartPoints);
   }
@@ -158,14 +159,20 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Stream closed");
         return;
       }
-      const dataStr = new TextDecoder().decode(value);
-      console.log("Raw data received:", dataStr);
-      const data = parseData(dataStr);
-      if (data) {
-        lastValidData = data; // Store the last valid data
-        console.log("Valid data stored:", data);
-      } else {
-        console.warn("Invalid data format detected. Ignoring...");
+      buffer += new TextDecoder().decode(value);
+      console.log("Raw data received:", buffer);
+      
+      let index;
+      while ((index = buffer.indexOf('\n')) >= 0) {
+        const dataStr = buffer.slice(0, index + 1).trim();
+        buffer = buffer.slice(index + 1);
+        const data = parseData(dataStr);
+        if (data) {
+          lastValidData = data; // Store the last valid data
+          console.log("Valid data stored:", data);
+        } else {
+          console.warn("Invalid data format detected. Ignoring...");
+        }
       }
     } catch (err) {
       console.error("Failed to read data:", err);
@@ -224,29 +231,29 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Parse incoming data string
-  function parseData(dataStr) {
-    // Assuming dataStr format: "6.154 , 25.0"
-    const parts = dataStr.split(',');
-    if (parts.length !== 2) {
-      console.warn("Invalid data format:", dataStr);
-      return null;
-    }
-    
-    pH = parseFloat(parts[0]),
-    temperature = parseFloat(parts[1])
-
-    //Check if pH Value is within reasonable range
-    if (pH < 1 || pH > 14) {
-      console.warn("Invalid pH Value:", pH);
-      return null
-    }
-
-    return {
-      //timestamp: parts[0],
-      pH: parseFloat(parts[0]),
-      temperature: parseFloat(parts[1])
-    };
+  // Parse incoming data string
+function parseData(dataStr) {
+  // Assuming dataStr format: "6.154 , 25.0"
+  const parts = dataStr.split(',');
+  if (parts.length !== 2) {
+    console.warn("Invalid data format:", dataStr);
+    return null;
   }
+  
+  const pH = parseFloat(parts[0]);
+  const temperature = parseFloat(parts[1]);
+
+  // Check if pH Value is within reasonable range
+  if (pH < 1 || pH > 14) {
+    console.warn("Invalid pH Value:", pH);
+    return null;
+  }
+
+  return {
+    pH,
+    temperature
+  };
+}
 
   // Update real-time chart
   function updateRealTimeChart() {
