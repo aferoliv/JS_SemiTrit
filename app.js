@@ -73,6 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
       isConnected = true;
     } catch (err) {
       console.error("Failed to connect:", err);
+      alert("Failed to connect to the equipment. Please check the connection and try again.");
     }
   }
 
