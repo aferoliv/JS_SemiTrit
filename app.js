@@ -38,8 +38,8 @@ document.addEventListener("DOMContentLoaded", () => {
   elements.connectButton.addEventListener('click', connect);
   elements.disconnectButton.addEventListener('click', disconnect);
   elements.addExperimentButton.addEventListener('click', addExperimentData);
-  elements.downloadRealTimeDataButton.addEventListener('click', () => downloadCSV(realTimeData, 'real-time_data.csv'));
-  elements.downloadExperimentDataButton.addEventListener('click', () => downloadCSV(experimentData, 'experiment_data.csv'));
+  elements.downloadRealTimeDataButton.addEventListener('click', () => downloadCSV(realTimeData, 'real-time_data.csv', ['date', 'time', 'read', 'pH', 'temperature']));
+  elements.downloadExperimentDataButton.addEventListener('click', () => downloadCSV(experimentData, 'experiment_data.csv', ['date', 'time', 'read', 'volume', 'pH', 'temperature']));
   elements.readIntervalSelect.addEventListener('change', updateReadInterval);
   elements.maxPointsInput.addEventListener('change', updateRealTimeChart);
 
@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Add experiment data to the chart and table
   function addExperimentData() {
     const volume = parseInt(elements.volumeInput.value);
-    const data = { ...lastValidData, ...getCurrentDateTime(), volume: volumeSum += volume };
+    const data = { ...lastValidData, ...getCurrentDateTime(), read: readCount, volume: volumeSum += volume };
     experimentData.push(data);
     updateExperimentTable();
     charts.experimentChart.data.datasets[0].data = experimentData.map(data => ({ x: data.volume, y: data.pH }));
@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (parts.length !== 2) return null;
 
     const pH = parseFloat(parts[0]);
-    const temperature = parseFloat(parts[1]);
+    const temperature = parseFloat(parts[1]).toFixed(1); // Format temperature to 1 decimal place
     if (isNaN(pH) || pH < 1 || pH > 14 || isNaN(temperature)) return null;
 
     return { pH, temperature };
@@ -155,7 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Update the experiment table with the latest data
   function updateExperimentTable() {
-    elements.experimentTableBody.innerHTML = experimentData.map(data => createTableRow(data, ['date', 'time', 'volume', 'pH', 'temperature'])).join('');
+    elements.experimentTableBody.innerHTML = experimentData.map(data => createTableRow(data, ['date', 'time', 'read', 'volume', 'pH', 'temperature'])).join('');
   }
 
   // Populate equipment options
@@ -206,8 +206,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Download data as CSV
-  function downloadCSV(dataArray, filename) {
-    const csvContent = "data:text/csv;charset=utf-8," + dataArray.map(e => Object.values(e).join(',')).join('\n');
+  function downloadCSV(dataArray, filename, headers) {
+    const csvContent = "data:text/csv;charset=utf-8,"
+      + [headers.join(','), ...dataArray.map(e => headers.map(header => e[header]).join(','))].join('\n');
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
