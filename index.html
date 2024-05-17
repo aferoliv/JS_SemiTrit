@@ -13,7 +13,7 @@
       height: 400px;
     }
     .scrollable-table {
-      max-height: 250px;
+      max-height: 260px;
       overflow-y: auto;
     }
     .mb-reduced {
@@ -31,38 +31,34 @@
 <body>
   <div class="container">
     <header class="bg-primary text-white text-center py-2 mb-4">
-      <h1>Lab Equipment Data Logger</h1>
+      <h2>Lab Equipment Data Logger</h2>
     </header>
 
     <div class="row mb-3">
       <div class="col-md-6">
         <h2>Connection</h2>
         <form id="connection-form">
-          <div class="mb-3">
-            <label for="equipment" class="form-label">Equipment</label>
-            <select id="equipment" class="form-select">
-              <!-- Options will be populated dynamically -->
-            </select>
-          </div>
           <div class="row g-2">
+            <div class="col-md-5">
+              <label for="equipment" class="form-label">Equipment</label>
+              <select id="equipment" class="form-select">
+                <!-- Options will be populated dynamically -->
+              </select>
+            </div>
             <div class="col-md-4">
               <label for="read-interval" class="form-label">Read Interval</label>
               <select id="read-interval" class="form-select">
                 <option value="2000">Every 2 seconds</option>
-                <option value="5000">Every 5 seconds</option>
-                <option value="10000" selected>Every 10 seconds</option>
+                <option value="5000" selected>Every 5 seconds</option>
+                <option value="10000">Every 10 seconds</option>
                 <option value="30000">Every 30 seconds</option>
                 <option value="60000">Every minute</option>
                 <option value="300000">Every 5 minutes</option>
               </select>
             </div>
-            <div class="col-md-4">
-              <label for="connect-button" class="form-label">&nbsp;</label>
-              <button type="button" id="connect-button" class="btn btn-info full-width-button">Connect</button>
-            </div>
-            <div class="col-md-4">
-              <label for="disconnect-button" class="form-label">&nbsp;</label>
-              <button type="button" id="disconnect-button" class="btn btn-warning full-width-button" disabled>Disconnect</button>
+            <div class="col-md-3">
+              <label for="toggle-button" class="form-label">&nbsp;</label>
+              <button type="button" id="toggle-button" class="btn btn-info full-width-button">Connect</button>
             </div>
           </div>
         </form>

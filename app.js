@@ -2,8 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // DOM Elements
   const elements = {
     equipmentSelect: document.getElementById('equipment'),
-    connectButton: document.getElementById('connect-button'),
-    disconnectButton: document.getElementById('disconnect-button'),
+    toggleButton: document.getElementById('toggle-button'),
     readIntervalSelect: document.getElementById('read-interval'),
     realTimeChartCtx: document.getElementById('real-time-chart').getContext('2d'),
     experimentChartCtx: document.getElementById('experiment-chart').getContext('2d'),
@@ -22,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let lastValidData = null;
   let realTimeData = [], experimentData = [];
   let volumeSum = 0, readCount = 0, experimentReadCount = 0;
+  let isConnected = false;
 
   // Initialize Charts
   const charts = {
@@ -37,13 +37,21 @@ document.addEventListener("DOMContentLoaded", () => {
   populateEquipmentOptions(equipmentList, elements.equipmentSelect);
 
   // Event Listeners
-  elements.connectButton.addEventListener('click', connect);
-  elements.disconnectButton.addEventListener('click', disconnect);
+  elements.toggleButton.addEventListener('click', toggleConnection);
   elements.addExperimentButton.addEventListener('click', addExperimentData);
   elements.downloadRealTimeDataButton.addEventListener('click', () => downloadCSV(realTimeData, 'real-time_data.csv', ['date', 'time', 'read', 'pH', 'temperature']));
   elements.downloadExperimentDataButton.addEventListener('click', () => downloadCSV(experimentData, 'experiment_data.csv', ['date', 'time', 'read', 'volume', 'pH', 'temperature']));
   elements.readIntervalSelect.addEventListener('change', updateReadInterval);
   elements.maxPointsInput.addEventListener('change', updateRealTimeChart);
+
+  // Toggle connection
+  async function toggleConnection() {
+    if (isConnected) {
+      await disconnect();
+    } else {
+      await connect();
+    }
+  }
 
   // Connect to the selected equipment
   async function connect() {
@@ -61,7 +69,8 @@ document.addEventListener("DOMContentLoaded", () => {
       reader = port.readable.getReader();
       startSerialReading();
       updateReadInterval();
-      toggleConnectionButtons(true);
+      toggleButtonState(true);
+      isConnected = true;
     } catch (err) {
       console.error("Failed to connect:", err);
     }
@@ -73,7 +82,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (port) await port.close();
     clearInterval(readTimer);
     clearInterval(updateTimer);
-    toggleConnectionButtons(false);
+    toggleButtonState(false);
+    isConnected = false;
   }
 
   // Start reading data from the serial port
@@ -203,10 +213,11 @@ document.addEventListener("DOMContentLoaded", () => {
     scrollableElement.scrollTop = scrollableElement.scrollHeight;    
   }
 
-  // Toggle connection buttons
-  function toggleConnectionButtons(isConnected) {
-    elements.connectButton.disabled = isConnected;
-    elements.disconnectButton.disabled = !isConnected;
+  // Toggle connection button state
+  function toggleButtonState(isConnected) {
+    elements.toggleButton.textContent = isConnected ? 'Disconnect' : 'Connect';
+    elements.toggleButton.classList.toggle('btn-warning', isConnected);
+    elements.toggleButton.classList.toggle('btn-info', !isConnected);
   }
 
   // Download data as CSV
