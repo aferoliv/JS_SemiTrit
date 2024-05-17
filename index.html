@@ -13,7 +13,7 @@
       height: 400px;
     }
     .scrollable-table {
-      max-height: 250px; /* Adjust the height as needed */
+      max-height: 250px;
       overflow-y: auto;
     }
     .mb-reduced {
@@ -32,69 +32,68 @@
 
     <div class="row mb-3">
       <div class="col-md-6">
-        <h2>Conexão</h2>
+        <h2>Connection</h2>
         <form id="connection-form">
           <div class="mb-3">
-            <label for="equipment" class="form-label">Equipamento</label>
+            <label for="equipment" class="form-label">Equipment</label>
             <select id="equipment" class="form-select">
               <!-- Options will be populated dynamically -->
             </select>
           </div>
           <div class="row g-2">
             <div class="col-md-4">
-              <label for="read-interval" class="form-label">Taxa de Leitura</label>
+              <label for="read-interval" class="form-label">Read Interval</label>
               <select id="read-interval" class="form-select">
-                <option value="2000">1 a cada 2 segundos</option>
-                <option value="5000">1 a cada 5 segundos</option>
-                <option value="10000" selected>1 a cada 10 segundos</option>
-                <option value="30000">1 a cada 30 segundos</option>
-                <option value="60000">1 a cada minuto</option>
-                <option value="300000">1 a cada 5 minutos</option>
+                <option value="2000">Every 2 seconds</option>
+                <option value="5000">Every 5 seconds</option>
+                <option value="10000" selected>Every 10 seconds</option>
+                <option value="30000">Every 30 seconds</option>
+                <option value="60000">Every minute</option>
+                <option value="300000">Every 5 minutes</option>
               </select>
             </div>
             <div class="col-md-4">
-              <label for="connect-button" class="form-label">&nbsp</label>
-              <button type="button" id="connect-button" class="btn btn-info full-width-button">Conectar</button>
+              <label for="connect-button" class="form-label">&nbsp;</label>
+              <button type="button" id="connect-button" class="btn btn-info full-width-button">Connect</button>
             </div>
             <div class="col-md-4">
-              <label for="disconnect-button" class="form-label">&nbsp</label>
-              <button type="button" id="disconnect-button" class="btn btn-warning full-width-button" disabled>Desconectar</button>
+              <label for="disconnect-button" class="form-label">&nbsp;</label>
+              <button type="button" id="disconnect-button" class="btn btn-warning full-width-button" disabled>Disconnect</button>
             </div>
           </div>
         </form>
       </div>
       <div class="col-md-6">
-        <h2>Instruções</h2>
+        <h2>Instructions</h2>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
       </div>
-      
     </div>
 
     <div class="row mb-reduced">
       <div class="col-md-6">
-        <h2>Tempo Real</h2>
+        <h2>Real-Time Data</h2>
         <div class="mb-reduced">
           <canvas id="real-time-chart"></canvas>
         </div>
         <div class="row g-2 mb-3">
           <div class="col-md-8">
-            <label for="max-points" class="form-label">Número de Pontos do gráfico</label>
+            <label for="max-points" class="form-label">Number of Points</label>
             <input type="number" id="max-points" class="form-control" value="50">
           </div>
           <div class="col-md-4">
-            <label for="clear-data-button" class="form-label">&nbsp</label>
-            <button type="button" id="clear-data-button" class="btn btn-danger full-width-button" disabled>Apagar Dados</button>
+            <label for="clear-data-button" class="form-label">&nbsp;</label>
+            <button type="button" id="clear-data-button" class="btn btn-danger full-width-button" disabled>Clear Data</button>
           </div>
         </div>
         <div class="scrollable-table">
           <table class="table mt-3">
             <thead>
               <tr>
-                <th>Data</th>
-                <th>Hora</th>
-                <th>Leitura</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Read</th>
                 <th>pH</th>
-                <th>Temperatura (C)</th>
+                <th>Temperature (°C)</th>
               </tr>
             </thead>
             <tbody id="real-time-table-body">
@@ -102,10 +101,10 @@
             </tbody>
           </table>
         </div>
-        <button type="button" id="download-real-time-data-button" class="btn btn-info mt-3 full-width-button">Download Dados de Tempo Real</button>
+        <button type="button" id="download-real-time-data-button" class="btn btn-info mt-3 full-width-button">Download Real-Time Data</button>
       </div>
       <div class="col-md-6">
-        <h2>Experimento</h2>
+        <h2>Experiment Data</h2>
         <div class="mb-reduced">
           <canvas id="experiment-chart"></canvas>
         </div>
@@ -115,19 +114,19 @@
             <input type="number" id="volume" class="form-control" value="100">
           </div>
           <div class="col-md-4">
-            <label for="add-experiment-button" class="form-label">&nbsp</label>
-            <button type="button" id="add-experiment-button" class="btn btn-info full-width-button" disabled>Adicionar</button>
+            <label for="add-experiment-button" class="form-label">&nbsp;</label>
+            <button type="button" id="add-experiment-button" class="btn btn-info full-width-button" disabled>Add Experiment</button>
           </div>
         </div>
         <div class="scrollable-table">
           <table class="table mt-3">
             <thead>
               <tr>
-                <th>Data</th>
-                <th>Hora</th>
+                <th>Date</th>
+                <th>Time</th>
                 <th>Volume (µl)</th>
                 <th>pH</th>
-                <th>Temperatura (C)</th>
+                <th>Temperature (°C)</th>
               </tr>
             </thead>
             <tbody id="experiment-table-body">
@@ -135,12 +134,12 @@
             </tbody>
           </table>
         </div>
-        <button type="button" id="download-experiment-data-button" class="btn btn-info mt-3 full-width-button" disabled>Download de Dados</button>
+        <button type="button" id="download-experiment-data-button" class="btn btn-info mt-3 full-width-button" disabled>Download Experiment Data</button>
       </div>
     </div>
 
     <footer class="bg-dark text-white text-center py-2 mt-4">
-      <p>Rodapé</p>
+      <p>Footer</p>
     </footer>
   </div>
 
