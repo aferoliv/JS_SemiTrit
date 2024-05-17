@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Start reading serial data at a constant rate
   function startSerialReading() {
-    readTimer = setInterval(readSerialData, 750); // Read data every second
+    readTimer = setInterval(readSerialData, 1000); // Read data every second
     readIntervalSelect.addEventListener('change', updateReadInterval);
     maxPointsInput.addEventListener('change', updateRealTimeChartPoints);
   }
@@ -161,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       buffer += new TextDecoder().decode(value);
       console.log("Raw data received:", buffer);
-      
+
       let index;
       while ((index = buffer.indexOf('\r')) >= 0) {
         const dataStr = buffer.slice(0, index + 1).trim();
@@ -169,13 +169,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const data = parseData(dataStr);
         if (data) {
           lastValidData = data; // Store the last valid data
-          console.log("Valid data stored:", data);
+          //console.log("Valid data stored:", data);
         } else {
-          console.warn("Invalid data format detected. Ignoring...");
+          //console.warn("Invalid data format detected. Ignoring...");
         }
       }
     } catch (err) {
-      console.error("Failed to read data:", err);
+      //console.error("Failed to read data:", err);
     }
   }
 
@@ -201,7 +201,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const data = lastValidData;
     lastUpdatedData = data; // Update the last updated data
-    console.log("Updating with data:", data);
+    //console.log("Updating with data:", data);
 
     // Get current date and time from the computer
     const now = new Date();
@@ -232,28 +232,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Parse incoming data string
   // Parse incoming data string
-function parseData(dataStr) {
-  // Assuming dataStr format: "6.154 , 25.0"
-  const parts = dataStr.split(',');
-  if (parts.length !== 2) {
-    console.warn("Invalid data format:", dataStr);
-    return null;
-  }
-  
-  const pH = parseFloat(parts[0]);
-  const temperature = parseFloat(parts[1]);
+  function parseData(dataStr) {
+    // Assuming dataStr format: "6.154 , 25.0"
+    const parts = dataStr.split(',');
+    if (parts.length !== 2) {
+      //console.warn("Invalid data format:", dataStr);
+      return null;
+    }
 
-  // Check if pH Value is within reasonable range
-  if (pH < 1 || pH > 14) {
-    console.warn("Invalid pH Value:", pH);
-    return null;
-  }
+    const pH = parseFloat(parts[0]);
+    const temperature = parseFloat(parts[1]);
 
-  return {
-    pH,
-    temperature
-  };
-}
+    if (isNaN(pH) || pH < 1 || pH > 14) {
+      return null;
+    }
+
+    if (isNaN(temperature)) {
+      return null;
+    }
+
+    return {
+      pH,
+      temperature
+    };
+  }
 
   // Update real-time chart
   function updateRealTimeChart() {
