@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let port;
   let reader;
-  let buffer = '';
+  let buffer;
   let readTimer;
   let updateTimer;
   let lastValidData = null; // Store the last valid data read
@@ -146,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Start reading serial data at a constant rate
   function startSerialReading() {
-    readTimer = setInterval(readSerialData, 1000); // Read data every second
+    readTimer = setInterval(readSerialData, 750); // Read data every second
     readIntervalSelect.addEventListener('change', updateReadInterval);
     maxPointsInput.addEventListener('change', updateRealTimeChartPoints);
   }
@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("Raw data received:", buffer);
       
       let index;
-      while ((index = buffer.indexOf('\n')) >= 0) {
+      while ((index = buffer.indexOf('\r')) >= 0) {
         const dataStr = buffer.slice(0, index + 1).trim();
         buffer = buffer.slice(index + 1);
         const data = parseData(dataStr);

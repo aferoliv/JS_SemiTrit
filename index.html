@@ -44,7 +44,7 @@
             <div class="col-md-4">
               <label for="read-interval" class="form-label">Taxa de Leitura</label>
               <select id="read-interval" class="form-select">
-                <option value="1000">1 a cada segundo</option>
+                <option value="2000">1 a cada 2 segundos</option>
                 <option value="5000">1 a cada 5 segundos</option>
                 <option value="10000" selected>1 a cada 10 segundos</option>
                 <option value="30000">1 a cada 30 segundos</option>
@@ -83,7 +83,7 @@
           </div>
           <div class="col-md-4">
             <label for="clear-data-button" class="form-label">&nbsp</label>
-            <button type="button" id="clear-data-button" class="btn btn-danger full-width-button">Apagar Dados</button>
+            <button type="button" id="clear-data-button" class="btn btn-danger full-width-button" disabled>Apagar Dados</button>
           </div>
         </div>
         <div class="scrollable-table">
@@ -116,7 +116,7 @@
           </div>
           <div class="col-md-4">
             <label for="add-experiment-button" class="form-label">&nbsp</label>
-            <button type="button" id="add-experiment-button" class="btn btn-info full-width-button">Adicionar</button>
+            <button type="button" id="add-experiment-button" class="btn btn-info full-width-button" disabled>Adicionar</button>
           </div>
         </div>
         <div class="scrollable-table">
@@ -135,7 +135,7 @@
             </tbody>
           </table>
         </div>
-        <button type="button" id="download-experiment-data-button" class="btn btn-info mt-3 full-width-button">Download de Dados</button>
+        <button type="button" id="download-experiment-data-button" class="btn btn-info mt-3 full-width-button" disabled>Download de Dados</button>
       </div>
     </div>
 
