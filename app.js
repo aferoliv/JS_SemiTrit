@@ -14,8 +14,8 @@ document.addEventListener("DOMContentLoaded", () => {
     downloadExperimentDataButton: document.getElementById('download-experiment-data-button'),
     maxPointsInput: document.getElementById('max-points'),
     volumeInput: document.getElementById('volume'),
-    realTimeTable: document.querySelector('#real-time-table-body').parentElement.parentElement, // added to get the scrollable table
-    experimentTable: document.querySelector('#experiment-table-body').parentElement.parentElement // added to get the scrollable table
+    realTimeTable: document.querySelector('#real-time-table-body').parentElement.parentElement,
+    experimentTable: document.querySelector('#experiment-table-body').parentElement.parentElement
   };
 
   let port, reader, buffer = '', readTimer, updateTimer;
@@ -129,10 +129,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Add experiment data to the chart and table
   function addExperimentData() {
-    if (realTimeData.length === 0) return;
-    const lastDataPoint = realTimeData[realTimeData.length - 1];
+    if (!lastValidData) return;
     const volume = parseInt(elements.volumeInput.value);
-    const data = { ...lastDataPoint, read: ++experimentReadCount, volume: volumeSum += volume };
+    const currentDateTime = getCurrentDateTime();
+    const data = { ...lastValidData, ...currentDateTime, read: ++experimentReadCount, volume: volumeSum += volume };
     experimentData.push(data);
     updateExperimentTable();
     charts.experimentChart.data.datasets[0].data = experimentData.map(data => ({ x: data.volume, y: data.pH }));
