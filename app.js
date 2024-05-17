@@ -13,13 +13,15 @@ document.addEventListener("DOMContentLoaded", () => {
     downloadRealTimeDataButton: document.getElementById('download-real-time-data-button'),
     downloadExperimentDataButton: document.getElementById('download-experiment-data-button'),
     maxPointsInput: document.getElementById('max-points'),
-    volumeInput: document.getElementById('volume')
+    volumeInput: document.getElementById('volume'),
+    realTimeTable: document.querySelector('#real-time-table-body').parentElement.parentElement, // added to get the scrollable table
+    experimentTable: document.querySelector('#experiment-table-body').parentElement.parentElement // added to get the scrollable table
   };
 
   let port, reader, buffer = '', readTimer, updateTimer;
   let lastValidData = null;
   let realTimeData = [], experimentData = [];
-  let volumeSum = 0, readCount = 0;
+  let volumeSum = 0, readCount = 0, experimentReadCount = 0;
 
   // Initialize Charts
   const charts = {
@@ -127,8 +129,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Add experiment data to the chart and table
   function addExperimentData() {
+    if (realTimeData.length === 0) return;
+    const lastDataPoint = realTimeData[realTimeData.length - 1];
     const volume = parseInt(elements.volumeInput.value);
-    const data = { ...lastValidData, ...getCurrentDateTime(), read: readCount, volume: volumeSum += volume };
+    const data = { ...lastDataPoint, read: ++experimentReadCount, volume: volumeSum += volume };
     experimentData.push(data);
     updateExperimentTable();
     charts.experimentChart.data.datasets[0].data = experimentData.map(data => ({ x: data.volume, y: data.pH }));
@@ -150,12 +154,13 @@ document.addEventListener("DOMContentLoaded", () => {
   // Update the real-time table with the latest data
   function updateRealTimeTable() {
     elements.realTimeTableBody.innerHTML = realTimeData.map(data => createTableRow(data, ['date', 'time', 'read', 'pH', 'temperature'])).join('');
-    scrollToBottom();
+    scrollToBottom(elements.realTimeTable);
   }
 
   // Update the experiment table with the latest data
   function updateExperimentTable() {
     elements.experimentTableBody.innerHTML = experimentData.map(data => createTableRow(data, ['date', 'time', 'read', 'volume', 'pH', 'temperature'])).join('');
+    scrollToBottom(elements.experimentTable);
   }
 
   // Populate equipment options
@@ -193,10 +198,9 @@ document.addEventListener("DOMContentLoaded", () => {
     return { date: now.toLocaleDateString(), time: now.toLocaleTimeString() };
   }
 
-  // Scroll to the bottom of a scrollable element
-  function scrollToBottom() {
-    const scrollableTable = document.querySelector('.scrollable-table');
-    scrollableTable.scrollTop = scrollableTable.scrollHeight;    
+  // Scroll to the bottom of a specific scrollable element
+  function scrollToBottom(scrollableElement) {
+    scrollableElement.scrollTop = scrollableElement.scrollHeight;    
   }
 
   // Toggle connection buttons
