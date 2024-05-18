@@ -9,26 +9,28 @@ document.addEventListener("DOMContentLoaded", () => {
     derivativeChartCtx: document.getElementById('derivative-chart').getContext('2d'),
     realTimeTableBody: document.getElementById('real-time-table-body'),
     experimentTableBody: document.getElementById('experiment-table-body'),
-    addExperimentButton: document.getElementById('add-experiment-button'),
+    addExperimentDataButton: document.getElementById('add-experiment-data-button'),
     downloadRealTimeDataButton: document.getElementById('download-real-time-data-button'),
     downloadExperimentDataButton: document.getElementById('download-experiment-data-button'),
+    downloadDerivativeDataButton: document.getElementById('download-derivative-data-button'),
     maxPointsInput: document.getElementById('max-points'),
     volumeInput: document.getElementById('volume'),
     realTimeTable: document.querySelector('#real-time-table-body').parentElement.parentElement,
     experimentTable: document.querySelector('#experiment-table-body').parentElement.parentElement
   };
 
-  let port, reader, readTimer, updateTimer, buffer;
+  let port, reader, readTimer, updateTimer;
+  let buffer = "";
   let lastValidData = null;
-  let realTimeData = [], experimentData = [];
+  let realTimeData = [], experimentData = [], derivativeData = [];
   let volumeSum = 0, readCount = 0, experimentReadCount = 0;
   let isConnected = false;
 
   // Initialize Charts
   const charts = {
-    realTimeChart: new Chart(elements.realTimeChartCtx, createChartConfig('', 'Read Number', 'pH Value')),
-    experimentChart: new Chart(elements.experimentChartCtx, createChartConfig('', 'Volume', 'pH Value')),
-    derivativeChart: new Chart(elements.derivativeChartCtx, createChartConfig('', 'Average Volume', 'Derivative'))
+    realTimeChart: new Chart(elements.realTimeChartCtx, createChartConfig('Real-Time Chart', 'Read Number', 'pH Value')),
+    experimentChart: new Chart(elements.experimentChartCtx, createChartConfig('Experiment Chart', 'Volume', 'pH Value')),
+    derivativeChart: new Chart(elements.derivativeChartCtx, createChartConfig('Derivative Chart', 'Average Volume', 'Derivative'))
   };
 
   // Initialize Equipment Options
@@ -40,19 +42,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Event Listeners
   elements.toggleButton.addEventListener('click', toggleConnection);
-  elements.addExperimentButton.addEventListener('click', addExperimentData);
+  elements.addExperimentDataButton.addEventListener('click', addExperimentData);
   elements.downloadRealTimeDataButton.addEventListener('click', () => downloadCSV(realTimeData, 'real-time_data.csv', ['date', 'time', 'read', 'pH', 'temperature']));
   elements.downloadExperimentDataButton.addEventListener('click', () => downloadCSV(experimentData, 'experiment_data.csv', ['date', 'time', 'read', 'volume', 'pH', 'temperature']));
+  elements.downloadDerivativeDataButton.addEventListener('click', () => downloadCSV(derivativeData, 'derivative_data.csv', ['averageVolume', 'derivativeValue']));
   elements.readIntervalSelect.addEventListener('change', updateReadInterval);
   elements.maxPointsInput.addEventListener('change', updateRealTimeChart);
 
+  // Bind Ctrl + Space to the function addExperimentData
+  document.addEventListener('keydown', (event) => {
+    if (event.ctrlKey && event.code === 'Space') {
+      event.preventDefault();
+      addExperimentData();
+    }
+  });
+
   // Toggle connection
   async function toggleConnection() {
-    if (isConnected) {
-      await disconnect();
-    } else {
-      await connect();
-    }
+    isConnected ? await disconnect() : await connect();
   }
 
   // Connect to the selected equipment
@@ -95,12 +102,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Read data from the serial port
-  async function readSerialData() {    
+  async function readSerialData() {
     try {
       const { value, done } = await reader.read();
       if (done) return;
       buffer += new TextDecoder().decode(value);
-      console.log("Raw data received:", buffer);  // Log raw serial data
+      console.log("Raw data received:", buffer);
 
       let index;
       while ((index = buffer.indexOf('\r')) >= 0) {
@@ -136,8 +143,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const data = { ...lastValidData, ...getCurrentDateTime(), read: ++readCount };
     realTimeData.push(data);
-    updateRealTimeTable();
+    updateTable(elements.realTimeTableBody, realTimeData, ['date', 'time', 'read', 'pH', 'temperature']);
     updateRealTimeChart();
+
+    toggleDownloadButton(elements.downloadRealTimeDataButton, realTimeData);
   }
 
   // Add experiment data to the chart and table
@@ -147,11 +156,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const currentDateTime = getCurrentDateTime();
     const data = { ...lastValidData, ...currentDateTime, read: ++experimentReadCount, volume: volumeSum += volume };
     experimentData.push(data);
-    updateExperimentTable();    
-    charts.experimentChart.data.datasets[0].data = experimentData.map(data => ({ x: data.volume, y: data.pH }));
-    charts.experimentChart.update();
+    updateTable(elements.experimentTableBody, experimentData, ['date', 'time', 'read', 'volume', 'pH', 'temperature']);
+    updateChart(charts.experimentChart, experimentData, 'volume', 'pH');
+    updateDerivativeData();
     playBipSound();
-    addVisualFeedback(elements.addExperimentButton);
+    addVisualFeedback(elements.addExperimentDataButton);
+    toggleDownloadButton(elements.downloadExperimentDataButton, experimentData);
   }
 
   // Parse the data string from the equipment
@@ -166,16 +176,46 @@ document.addEventListener("DOMContentLoaded", () => {
     return { pH, temperature };
   }
 
-  // Update the real-time table with the latest data
-  function updateRealTimeTable() {
-    elements.realTimeTableBody.innerHTML = realTimeData.map(data => createTableRow(data, ['date', 'time', 'read', 'pH', 'temperature'])).join('');
-    scrollToBottom(elements.realTimeTable);
+  // Update Derivative Data and Chart
+  function updateDerivativeData() {
+    if (experimentData.length < 2) return;
+
+    derivativeData = [];
+
+    for (let i = 1; i < experimentData.length; i++) {
+      const volume1 = experimentData[i - 1].volume;
+      const volume2 = experimentData[i].volume;
+      const pH1 = experimentData[i - 1].pH;
+      const pH2 = experimentData[i].pH;
+
+      const averageVolume = (volume1 + volume2) / 2;
+      const derivativeValue = (pH2 - pH1) / (volume2 - volume1);
+
+      derivativeData.push({
+        averageVolume: averageVolume.toFixed(1), // Format to 1 decimal place
+        derivativeValue: derivativeValue.toFixed(3) // Format to 3 decimal places
+      });
+    }
+
+    updateChart(charts.derivativeChart, derivativeData, 'averageVolume', 'derivativeValue');
+    toggleDownloadButton(elements.downloadDerivativeDataButton, derivativeData);
   }
 
-  // Update the experiment table with the latest data
-  function updateExperimentTable() {
-    elements.experimentTableBody.innerHTML = experimentData.map(data => createTableRow(data, ['date', 'time', 'read', 'volume', 'pH', 'temperature'])).join('');
-    scrollToBottom(elements.experimentTable);
+  // Update table with the latest data
+  function updateTable(tableBody, data, fields) {
+    tableBody.innerHTML = data.map(row => createTableRow(row, fields)).join('');
+    scrollToBottom(tableBody.parentElement.parentElement);
+  }
+
+  // Update chart with the latest data
+  function updateChart(chart, data, xField, yField) {
+    chart.data.datasets[0].data = data.map(row => ({ x: row[xField], y: row[yField] }));
+    chart.update();
+  }
+
+  // Toggle download button state
+  function toggleDownloadButton(button, data) {
+    button.disabled = data.length === 0;
   }
 
   // Populate equipment options
@@ -220,7 +260,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Scroll to the bottom of a specific scrollable element
   function scrollToBottom(scrollableElement) {
-    scrollableElement.scrollTop = scrollableElement.scrollHeight;    
+    scrollableElement.scrollTop = scrollableElement.scrollHeight;
   }
 
   // Toggle connection button state

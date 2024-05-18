@@ -48,19 +48,19 @@
 
 <body class="p-2">
   <div class="container-fluid">
-    <header class="bg-primary text-white text-center py-1 mb-3">
-      <h2>Lab Equipment Data Logger</h2>
+    <header class="text-bg-primary text-center py-1 mb-2">
+      <h3 class="mb-0">Lab Equipment Data Logger</h3>
     </header>
 
-    <div class="row mb-3 g-3">
+    <div class="row mb-2 g-2">
       <div class="col-md-5">
-        <h3 class="text-center">Instructions</h3>
+        <h4 class="text-center">Instructions</h4>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
       </div>
       <div class="col-md-7 border border-info border-1">
-        <h3 class="text-center">Connection</h3>
+        <h4 class="text-center">Connection</h4>
         <form id="connection-form">
-          <div class="row g-3 mb-3 align-items-center">
+          <div class="row g-2 mb-2 align-items-center">
             <div class="col-md-5">
               <div class="label-container">
                 <label for="equipment" class="form-label mb-0">Equipment</label>
@@ -90,16 +90,16 @@
       </div>
     </div>
 
-    <div class="row mb-3 g-3">
+    <div class="row mb-2 g-2">
       <div class="col-md-5 border border-info border-1">
-        <h3 class="text-center">Real-Time Data</h3>
-        <div class="">
+        <h4 class="text-center">Real-Time Data</h4>
+        <div class="col-auto">
           <canvas id="real-time-chart"></canvas>
         </div>
-        <div class="row g-3 mb-3 align-items-center">
+        <div class="row g-2 mb-2 align-items-center">
           <div class="col-md-8">
             <div class="label-container">
-              <label for="max-points" class="form-label mb-0">Number of Points</label>
+              <label for="max-points" class="form-label mb-0">Chart Number of Points</label>
               <input type="number" id="max-points" class="form-control" value="50">
             </div>
           </div>
@@ -109,7 +109,7 @@
           </div>
         </div>
         <div class="scrollable-table">
-          <table class="table mt-3">
+          <table class="table mt-2">
             <thead>
               <tr>
                 <th>Date</th>
@@ -124,27 +124,26 @@
             </tbody>
           </table>
         </div>
-        <button type="button" id="download-real-time-data-button"
-          class="btn btn-info mt-3 mb-3 full-width-button">Download Real-Time Data</button>
+        <button type="button" id="download-real-time-data-button" class="btn btn-info mt-2 mb-2 full-width-button" disabled>Download Real-Time Data</button>
       </div>
       <div class="col-md-5 border border-info border-1">
-        <h3 class="text-center">Experiment Data</h3>
-        <div class="">
+        <h4 class="text-center">Experiment Data</h4>
+        <div class="col-auto">
           <canvas id="experiment-chart"></canvas>
         </div>
-        <div class="row g-3 mb-3 align-items-center">
+        <div class="row g-2 mb-2 align-items-center">
           <div class="col-md-8">
             <div class="label-container">
-              <label for="volume" class="form-label mb-0">Volume (µl)</label>
+              <label for="volume" class="form-label mb-0">Addition Volume (µl)</label>
               <input type="number" id="volume" class="form-control" value="100">
             </div>
           </div>
           <div class="col-md-4">
-            <button type="button" id="add-experiment-button" class="btn btn-primary full-width-button">Add</button>
+            <button type="button" id="add-experiment-data-button" class="btn btn-primary full-width-button">Add</button>
           </div>
         </div>
         <div class="scrollable-table">
-          <table class="table mt-3">
+          <table class="table mt-2">
             <thead>
               <tr>
                 <th>Date</th>
@@ -160,21 +159,20 @@
             </tbody>
           </table>
         </div>
-        <button type="button" id="download-experiment-data-button"
-          class="btn btn-info mt-3 mb-3 full-width-button">Download Experiment Data</button>
+        <button type="button" id="download-experiment-data-button" class="btn btn-info mt-2 mb-2 full-width-button" disabled>Download Experiment Data</button>
       </div>
       <div class="col-md-2 border border-info border-1">
-        <h3 class="text-center">Derivative</h3>
-        <div class="">
+        <h4 class="text-center">Derivative</h4>
+        <div class="col-auto">
           <canvas id="derivative-chart"></canvas>
         </div>
-        <button type="button" id="download-derivative-data-button" class="btn btn-info mt-3 mb-3 full-width-button"
+        <button type="button" id="download-derivative-data-button" class="btn btn-info mt-2 mb-2 full-width-button"
           disabled>Download Derivative Data</button>
       </div>
     </div>
 
-    <footer class="bg-dark text-white text-center py-1 mt-3">
-      <p>Footer</p>
+    <footer class="text-bg-dark text-center py-1 mt-2">
+      <h6 class="mb-0">Footer</h6>
     </footer>
   </div>
 
