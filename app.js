@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     readIntervalSelect: document.getElementById('read-interval'),
     realTimeChartCtx: document.getElementById('real-time-chart').getContext('2d'),
     experimentChartCtx: document.getElementById('experiment-chart').getContext('2d'),
+    derivativeChartCtx: document.getElementById('derivative-chart').getContext('2d'),
     realTimeTableBody: document.getElementById('real-time-table-body'),
     experimentTableBody: document.getElementById('experiment-table-body'),
     addExperimentButton: document.getElementById('add-experiment-button'),
@@ -25,8 +26,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initialize Charts
   const charts = {
-    realTimeChart: new Chart(elements.realTimeChartCtx, createChartConfig('', 'Read Number', 'pH Value')),
-    experimentChart: new Chart(elements.experimentChartCtx, createChartConfig('', 'Volume', 'pH Value'))
+    realTimeChart: new Chart(elements.realTimeChartCtx, createChartConfig('', 'read Number', 'pH value')),
+    experimentChart: new Chart(elements.experimentChartCtx, createChartConfig('', 'volume', 'pH value')),
+    derivativeChart: new Chart(elements.derivativeChartCtx, createChartConfig('', 'average volume', 'derivative'))
   };
 
   // Initialize Equipment Options
@@ -38,7 +40,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Event Listeners
   elements.toggleButton.addEventListener('click', toggleConnection);
-  elements.addExperimentButton.addEventListener('click', addExperimentData);
+  elements.addExperimentButton.addEventListener('click', () => {
+    addExperimentData();    
+  });
   elements.downloadRealTimeDataButton.addEventListener('click', () => downloadCSV(realTimeData, 'real-time_data.csv', ['date', 'time', 'read', 'pH', 'temperature']));
   elements.downloadExperimentDataButton.addEventListener('click', () => downloadCSV(experimentData, 'experiment_data.csv', ['date', 'time', 'read', 'volume', 'pH', 'temperature']));
   elements.readIntervalSelect.addEventListener('change', updateReadInterval);
@@ -146,6 +150,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const data = { ...lastValidData, ...currentDateTime, read: ++experimentReadCount, volume: volumeSum += volume };
     experimentData.push(data);
     updateExperimentTable();
+    playBipSound();
+    addVisualFeedback(elements.addExperimentButton);
     charts.experimentChart.data.datasets[0].data = experimentData.map(data => ({ x: data.volume, y: data.pH }));
     charts.experimentChart.update();
   }
@@ -188,7 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function createChartConfig(label, xAxisLabel, yAxisLabel) {
     return {
       type: 'scatter',
-      data: { datasets: [{ label, data: [], backgroundColor: 'rgba(13, 202, 240, 1)', borderColor: 'rgba(13, 202, 240, 1)', showLine: true, borderWidth: 1, pointRadius: 3 }] },
+      data: { datasets: [{ label, data: [], backgroundColor: 'rgba(13, 202, 240, 1)', borderColor: 'rgba(13, 202, 240, 1)', showLine: true, borderWidth: 1, pointRadius: 2 }] },
       options: {
         plugins: {
           legend: {
@@ -223,7 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function toggleButtonState(isConnected) {
     elements.toggleButton.textContent = isConnected ? 'Disconnect' : 'Connect';
     elements.toggleButton.classList.toggle('btn-warning', isConnected);
-    elements.toggleButton.classList.toggle('btn-info', !isConnected);
+    elements.toggleButton.classList.toggle('btn-success', !isConnected);
   }
 
   // Download data as CSV
@@ -237,5 +243,26 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  }
+
+  // Play a "bip" sound
+  function playBipSound() {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(440, audioContext.currentTime); // 440 Hz
+    oscillator.connect(audioContext.destination);
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + 0.1); // 0.1 second duration
+  }
+
+  // Add visual feedback to the button
+  function addVisualFeedback(button) {
+    button.classList.add('btn-dark');
+    button.classList.remove('btn-primary');
+    setTimeout(() => {
+      button.classList.remove('btn-dark');
+      button.classList.add('btn-primary');
+    }, 500); // 500 ms duration
   }
 });

@@ -1,88 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lab Equipment Data Logger</title>  
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <title>Lab Equipment Data Logger</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <style>
-    body {
-      margin: 20px;
-    }
-    .chart-container {
-      height: 400px;
-    }
     .scrollable-table {
-      max-height: 260px;
+      max-height: 150px;
       overflow-y: auto;
     }
-    .mb-reduced {
-      margin-bottom: 1rem;
-    }
+
     .full-width-button {
       width: 100%;
     }
-    .table th, .table td {
-      font-size: 0.875rem; /* Reduce font size */
-      padding: 0.3rem;     /* Reduce cell padding */
+
+    .table th,
+    .table td {
+      font-size: 0.8rem;
+      /* Reduce font size */
+      padding: 0.20rem;
+      /* Reduce cell padding */
+    }
+
+    .label-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .label-container label {
+      margin-right: 0.5rem;
+      /* Adjust the space between the label and input */
+      white-space: nowrap;
+      /* Prevent the label from wrapping */
+    }
+
+    .label-container select,
+    .label-container input {
+      flex-grow: 1;
+      margin-right: 0.5rem;
+      /* Add margin to the right of the field */
     }
   </style>
 </head>
-<body>
-  <div class="container">
-    <header class="bg-primary text-white text-center py-2 mb-4">
+
+<body class="p-2">
+  <div class="container-fluid">
+    <header class="bg-primary text-white text-center py-1 mb-3">
       <h2>Lab Equipment Data Logger</h2>
     </header>
 
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <h2>Connection</h2>
+    <div class="row mb-3 g-3">
+      <div class="col-md-5">
+        <h3 class="text-center">Instructions</h3>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+      </div>
+      <div class="col-md-7 border border-info border-1">
+        <h3 class="text-center">Connection</h3>
         <form id="connection-form">
-          <div class="row g-2">
+          <div class="row g-3 mb-3 align-items-center">
             <div class="col-md-5">
-              <label for="equipment" class="form-label">Equipment</label>
-              <select id="equipment" class="form-select">
-                <!-- Options will be populated dynamically -->
-              </select>
+              <div class="label-container">
+                <label for="equipment" class="form-label mb-0">Equipment</label>
+                <select id="equipment" class="form-select">
+                  <!-- Options will be populated dynamically -->
+                </select>
+              </div>
             </div>
             <div class="col-md-4">
-              <label for="read-interval" class="form-label">Read Interval</label>
-              <select id="read-interval" class="form-select">
-                <option value="2000" selected>Every 2 seconds</option>
-                <option value="5000">Every 5 seconds</option>
-                <option value="10000">Every 10 seconds</option>
-                <option value="30000">Every 30 seconds</option>
-                <option value="60000">Every minute</option>
-                <option value="300000">Every 5 minutes</option>
-              </select>
+              <div class="label-container">
+                <label for="read-interval" class="form-label mb-0">Read Interval</label>
+                <select id="read-interval" class="form-select">
+                  <option value="2000" selected>Every 2 seconds</option>
+                  <option value="5000">Every 5 seconds</option>
+                  <option value="10000">Every 10 seconds</option>
+                  <option value="30000">Every 30 seconds</option>
+                  <option value="60000">Every minute</option>
+                  <option value="300000">Every 5 minutes</option>
+                </select>
+              </div>
             </div>
             <div class="col-md-3">
-              <label for="toggle-button" class="form-label">&nbsp;</label>
-              <button type="button" id="toggle-button" class="btn btn-info full-width-button">Connect</button>
+              <button type="button" id="toggle-button" class="btn btn-success full-width-button">Connect</button>
             </div>
           </div>
         </form>
       </div>
-      <div class="col-md-6">
-        <h2>Instructions</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
-      </div>
     </div>
 
-    <div class="row mb-reduced">
-      <div class="col-md-6">
-        <h2>Real-Time Data</h2>
-        <div class="mb-reduced">
+    <div class="row mb-3 g-3">
+      <div class="col-md-5 border border-info border-1">
+        <h3 class="text-center">Real-Time Data</h3>
+        <div class="">
           <canvas id="real-time-chart"></canvas>
         </div>
-        <div class="row g-2 mb-3">
+        <div class="row g-3 mb-3 align-items-center">
           <div class="col-md-8">
-            <label for="max-points" class="form-label">Number of Points</label>
-            <input type="number" id="max-points" class="form-control" value="50">
+            <div class="label-container">
+              <label for="max-points" class="form-label mb-0">Number of Points</label>
+              <input type="number" id="max-points" class="form-control" value="50">
+            </div>
           </div>
           <div class="col-md-4">
-            <label for="clear-data-button" class="form-label">&nbsp;</label>
-            <button type="button" id="clear-data-button" class="btn btn-danger full-width-button" disabled>Clear Data</button>
+            <button type="button" id="clear-data-button" class="btn btn-danger full-width-button" disabled>Clear
+              Data</button>
           </div>
         </div>
         <div class="scrollable-table">
@@ -101,21 +124,23 @@
             </tbody>
           </table>
         </div>
-        <button type="button" id="download-real-time-data-button" class="btn btn-info mt-3 full-width-button">Download Real-Time Data</button>
+        <button type="button" id="download-real-time-data-button"
+          class="btn btn-info mt-3 mb-3 full-width-button">Download Real-Time Data</button>
       </div>
-      <div class="col-md-6">
-        <h2>Experiment Data</h2>
-        <div class="mb-reduced">
+      <div class="col-md-5 border border-info border-1">
+        <h3 class="text-center">Experiment Data</h3>
+        <div class="">
           <canvas id="experiment-chart"></canvas>
         </div>
-        <div class="row g-2 mb-3">
+        <div class="row g-3 mb-3 align-items-center">
           <div class="col-md-8">
-            <label for="volume" class="form-label">Volume (µl)</label>
-            <input type="number" id="volume" class="form-control" value="100">
+            <div class="label-container">
+              <label for="volume" class="form-label mb-0">Volume (µl)</label>
+              <input type="number" id="volume" class="form-control" value="100">
+            </div>
           </div>
           <div class="col-md-4">
-            <label for="add-experiment-button" class="form-label">&nbsp;</label>
-            <button type="button" id="add-experiment-button" class="btn btn-info full-width-button">Add</button>
+            <button type="button" id="add-experiment-button" class="btn btn-primary full-width-button">Add</button>
           </div>
         </div>
         <div class="scrollable-table">
@@ -135,18 +160,32 @@
             </tbody>
           </table>
         </div>
-        <button type="button" id="download-experiment-data-button" class="btn btn-info mt-3 full-width-button">Download Experiment Data</button>
+        <button type="button" id="download-experiment-data-button"
+          class="btn btn-info mt-3 mb-3 full-width-button">Download Experiment Data</button>
+      </div>
+      <div class="col-md-2 border border-info border-1">
+        <h3 class="text-center">Derivative</h3>
+        <div class="">
+          <canvas id="derivative-chart"></canvas>
+        </div>
+        <button type="button" id="download-derivative-data-button" class="btn btn-info mt-3 mb-3 full-width-button"
+          disabled>Download Derivative Data</button>
       </div>
     </div>
 
-    <footer class="bg-dark text-white text-center py-2 mt-4">
+    <footer class="bg-dark text-white text-center py-1 mt-3">
       <p>Footer</p>
     </footer>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+    integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+    crossorigin="anonymous"></script>
   <script src="app.js"></script>
 </body>
+
 </html>
