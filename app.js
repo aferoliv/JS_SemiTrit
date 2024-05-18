@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     experimentTable: document.querySelector('#experiment-table-body').parentElement.parentElement
   };
 
-  let port, reader, buffer = '', readTimer, updateTimer;
+  let port, reader, readTimer, updateTimer, buffer;
   let lastValidData = null;
   let realTimeData = [], experimentData = [];
   let volumeSum = 0, readCount = 0, experimentReadCount = 0;
@@ -26,9 +26,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initialize Charts
   const charts = {
-    realTimeChart: new Chart(elements.realTimeChartCtx, createChartConfig('', 'read Number', 'pH value')),
-    experimentChart: new Chart(elements.experimentChartCtx, createChartConfig('', 'volume', 'pH value')),
-    derivativeChart: new Chart(elements.derivativeChartCtx, createChartConfig('', 'average volume', 'derivative'))
+    realTimeChart: new Chart(elements.realTimeChartCtx, createChartConfig('', 'Read Number', 'pH Value')),
+    experimentChart: new Chart(elements.experimentChartCtx, createChartConfig('', 'Volume', 'pH Value')),
+    derivativeChart: new Chart(elements.derivativeChartCtx, createChartConfig('', 'Average Volume', 'Derivative'))
   };
 
   // Initialize Equipment Options
@@ -40,9 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Event Listeners
   elements.toggleButton.addEventListener('click', toggleConnection);
-  elements.addExperimentButton.addEventListener('click', () => {
-    addExperimentData();    
-  });
+  elements.addExperimentButton.addEventListener('click', addExperimentData);
   elements.downloadRealTimeDataButton.addEventListener('click', () => downloadCSV(realTimeData, 'real-time_data.csv', ['date', 'time', 'read', 'pH', 'temperature']));
   elements.downloadExperimentDataButton.addEventListener('click', () => downloadCSV(experimentData, 'experiment_data.csv', ['date', 'time', 'read', 'volume', 'pH', 'temperature']));
   elements.readIntervalSelect.addEventListener('change', updateReadInterval);
@@ -97,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Read data from the serial port
-  async function readSerialData() {
+  async function readSerialData() {    
     try {
       const { value, done } = await reader.read();
       if (done) return;
@@ -108,8 +106,8 @@ document.addEventListener("DOMContentLoaded", () => {
       while ((index = buffer.indexOf('\r')) >= 0) {
         const dataStr = buffer.slice(0, index + 1).trim();
         buffer = buffer.slice(index + 1);
-        const data = parseData(dataStr);
-        if (data) lastValidData = data;
+        const parsedData = parseData(dataStr);
+        if (parsedData) lastValidData = parsedData;
       }
     } catch (err) {
       console.error("Failed to read data:", err);
@@ -120,8 +118,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateReadInterval() {
     clearInterval(updateTimer);
     const readInterval = parseInt(elements.readIntervalSelect.value);
-    updateTimer = setInterval(updateChartsAndTables, readInterval);
-    updateChartsAndTables();
+    updateTimer = setInterval(updateRealTimeData, readInterval);
+    updateRealTimeData();
   }
 
   // Update the real-time chart based on max points
@@ -133,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Update the charts and tables with the latest data
-  function updateChartsAndTables() {
+  function updateRealTimeData() {
     if (!lastValidData) return;
 
     const data = { ...lastValidData, ...getCurrentDateTime(), read: ++readCount };
@@ -149,11 +147,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const currentDateTime = getCurrentDateTime();
     const data = { ...lastValidData, ...currentDateTime, read: ++experimentReadCount, volume: volumeSum += volume };
     experimentData.push(data);
-    updateExperimentTable();
-    playBipSound();
-    addVisualFeedback(elements.addExperimentButton);
+    updateExperimentTable();    
     charts.experimentChart.data.datasets[0].data = experimentData.map(data => ({ x: data.volume, y: data.pH }));
     charts.experimentChart.update();
+    playBipSound();
+    addVisualFeedback(elements.addExperimentButton);
   }
 
   // Parse the data string from the equipment
