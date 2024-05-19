@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,6 +38,10 @@
       height: 300px !important;
       /* Set the height to double */
     }
+    .instructions {
+      font-size: 14px;
+      /* Adjust the font size as needed */
+    }    
   </style>
 </head>
 
@@ -44,22 +49,22 @@
   <div class="container-fluid">
     <!-- Header section -->
     <header class="text-bg-primary text-center py-1 mb-2">
-      <h3 class="mb-0">Lab Instrument Data Acquisition</h3>
+      <h4 class="mb-0">Lab Instrument Data Acquisition</h4>
     </header>
 
     <!-- Instructions and Connection sections -->
     <div class="row mb-2 g-2">
-      <div class="col-md-5 mb-3">
-        <h4 class="text-center">Instructions for Data Acquisition from Lab Instrumentation</h4>
-        <p class="lh-1 mb-3">This page is designed for acquiring data from lab instruments via RS232/USB ports. While it is primarily intended for titration data acquisition, it can also be used for other types of data collection.</p>
+      <div class="col-md-5 mb-3 instructions">
+        <h5 class="text-center">Instructions for Data Acquisition from Lab Instrumentation</h5>
+        <p class="lh-1 mb-3">This page is designed for acquiring data from lab instruments via RS232/USB ports. While it is primarily intended for titration data acquisition, it can also be used for other types of data collection.        </p>
         <p class="lh-1 my-1">1) Ensure your lab instrument is connected to your computer's USB port.</p>
         <p class="lh-1 my-1">2) Choose the appropriate instrument profile from the dropdown menu.</p>
         <p class="lh-1 my-1">3) Click the <strong>Connect</strong> button to establish a connection with the instrument.</p>
         <p class="lh-1 my-1">4) Define the Volume aliquot and Click <strong>Start</strong> to start the experiment.</p>
-        <p class="lh-1 my-1">5) Press the <strong>Add</strong> button to record the data point.</p>        
+        <p class="lh-1 my-1">5) Press the <strong>Add</strong> button to record the data point.</p>
       </div>
       <div class="col-md-7">
-        <h4 class="text-center">Connection</h4>
+        <h5 class="text-center">Connection</h5>
         <form id="connection-form">
           <div class="row g-2 mb-2 align-items-center">
             <div class="col-md-5">
@@ -94,7 +99,7 @@
     <!-- Real-Time Data and Experiment Data sections -->
     <div class="row mb-2 g-2">
       <div class="col-md-5">
-        <h4 class="text-center">Real-Time Data</h4>
+        <h5 class="text-center">Real-Time Data</h5>
         <div class="col-auto">
           <canvas id="real-time-chart"></canvas>
         </div>
@@ -127,7 +132,7 @@
         <button type="button" id="download-real-time-data-button" class="btn btn-info mt-2 mb-2 full-width-button" disabled>Download Real-Time Data</button>
       </div>
       <div class="col-md-5">
-        <h4 class="text-center">Titration Data</h4>
+        <h5 class="text-center">Titration Data</h5>
         <div class="col-auto">
           <canvas id="experiment-chart"></canvas>
         </div>
@@ -161,13 +166,13 @@
         <button type="button" id="download-experiment-data-button" class="btn btn-info mt-2 mb-2 full-width-button" disabled>Download Experiment Data</button>
       </div>
       <div class="col-md-2">
-        <h4 class="text-center">Derivative</h4>
+        <h5 class="text-center">Derivative</h5>
         <div class="col-auto">
           <canvas id="derivative-chart"></canvas>
         </div>
         <button type="button" id="download-derivative-data-button" class="btn btn-info mt-2 mb-2 full-width-button" disabled>Download Derivative Data</button>
       </div>
-      
+
     </div>
 
     <!-- Footer section -->
