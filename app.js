@@ -159,8 +159,17 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!lastValidData) return; // Exit if no valid data available
     const volume = parseInt(elements.volumeInput.value); // Get input volume
     const currentDateTime = getCurrentDateTime(); // Get current date and time
-    const data = { ...lastValidData, ...currentDateTime, read: ++experimentReadCount, volume: volumeSum += volume }; // Create new data point
+
+    // If experimentData is empty
+    let data;
+    if (experimentData.length === 0) {
+      data = { ...lastValidData, ...currentDateTime, read: ++experimentReadCount, volume: 0 }; // Create new data point with volume 0
+      elements.addExperimentDataButton.textContent = "Add"; // Change button text to "Add"      
+    } else {
+      data = { ...lastValidData, ...currentDateTime, read: ++experimentReadCount, volume: volumeSum += volume }; // Create new data point    
+    }
     experimentData.push(data); // Add to experiment data array
+
     updateTable(elements.experimentTableBody, experimentData, ['date', 'time', 'read', 'volume', 'pH', 'temperature']); // Update experiment table
     updateChart(charts.experimentChart, experimentData, 'volume', 'pH'); // Update experiment chart
     updateDerivativeData(); // Update derivative data
