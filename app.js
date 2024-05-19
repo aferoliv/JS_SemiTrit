@@ -28,11 +28,11 @@ document.addEventListener("DOMContentLoaded", () => {
   let isConnected = false; // Connection state
 
   // Initialize Charts
-  const charts = {
-    realTimeChart: new Chart(elements.realTimeChartCtx, createChartConfig('Real-Time Chart', 'Read Number', 'pH Value')),
-    experimentChart: new Chart(elements.experimentChartCtx, createChartConfig('Experiment Chart', 'Volume', 'pH Value')),
-    derivativeChart: new Chart(elements.derivativeChartCtx, createChartConfig('Derivative Chart', 'Average Volume', 'Derivative'))
-  };
+const charts = {
+  realTimeChart: new Chart(elements.realTimeChartCtx, createChartConfig('Real-Time Chart', 'Read Number', 'pH Value')),
+  experimentChart: new Chart(elements.experimentChartCtx, createChartConfig('Experiment Chart', 'Volume', 'pH Value')),
+  derivativeChart: new Chart(elements.derivativeChartCtx, createChartConfig('Derivative Chart', 'Average Volume', 'Derivative', false))
+};
 
   // Initialize Equipment Options
   const equipmentList = [
@@ -243,23 +243,24 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Create chart configuration
-  function createChartConfig(label, xAxisLabel, yAxisLabel) {
-    return {
-      type: 'scatter',
-      data: { datasets: [{ label, data: [], backgroundColor: 'rgba(13, 202, 240, 1)', borderColor: 'rgba(13, 202, 240, 1)', showLine: true, borderWidth: 1, pointRadius: 2 }] },
-      options: {
-        plugins: {
-          legend: {
-            display: false // Hide legend
-          }
-        },
-        scales: {
-          x: { type: 'linear', position: 'bottom', title: { display: true, text: xAxisLabel } }, // X-axis configuration
-          y: { title: { display: true, text: yAxisLabel } } // Y-axis configuration
+function createChartConfig(label, xAxisLabel, yAxisLabel, maintainAspectRatio = true) {
+  return {
+    type: 'scatter',
+    data: { datasets: [{ label, data: [], backgroundColor: 'rgba(13, 202, 240, 1)', borderColor: 'rgba(13, 202, 240, 1)', showLine: true, borderWidth: 1, pointRadius: 2 }] },
+    options: {
+      maintainAspectRatio: maintainAspectRatio,
+      plugins: {
+        legend: {
+          display: false // Hide legend
         }
+      },
+      scales: {
+        x: { type: 'linear', position: 'bottom', title: { display: true, text: xAxisLabel } }, // X-axis configuration
+        y: { title: { display: true, text: yAxisLabel } } // Y-axis configuration
       }
-    };
-  }
+    }
+  };
+}
 
   // Create table row from data
   function createTableRow(data, fields) {

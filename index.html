@@ -32,8 +32,14 @@
       flex-grow: 1;
       margin-right: 0.5rem;
     }
+    /* Add custom height for the derivative chart */
+    #derivative-chart {
+      height: 300px !important;
+      /* Set the height to double */
+    }
   </style>
 </head>
+
 <body class="p-2">
   <div class="container-fluid">
     <!-- Header section -->
@@ -101,7 +107,7 @@
         <div class="scrollable-table">
           <table class="table mt-2">
             <thead>
-              <tr>                
+              <tr>
                 <th>Time</th>
                 <th>Read</th>
                 <th>pH</th>
@@ -134,7 +140,7 @@
         <div class="scrollable-table">
           <table class="table mt-2">
             <thead>
-              <tr>                
+              <tr>
                 <th>Time</th>
                 <th>Read</th>
                 <th>Volume (µl)</th>
@@ -156,6 +162,7 @@
         </div>
         <button type="button" id="download-derivative-data-button" class="btn btn-info mt-2 mb-2 full-width-button" disabled>Download Derivative Data</button>
       </div>
+      
     </div>
 
     <!-- Footer section -->
@@ -175,4 +182,5 @@
   <!-- Application-specific JavaScript -->
   <script src="app.js"></script>
 </body>
+
 </html>
