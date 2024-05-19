@@ -44,8 +44,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Event Listeners
   elements.toggleButton.addEventListener('click', toggleConnection);
   elements.addExperimentDataButton.addEventListener('click', addExperimentData);
-  elements.downloadRealTimeDataButton.addEventListener('click', () => downloadCSV(realTimeData, 'real-time_data.csv', ['date', 'time', 'read', 'pH', 'temperature']));
-  elements.downloadExperimentDataButton.addEventListener('click', () => downloadCSV(experimentData, 'experiment_data.csv', ['date', 'time', 'read', 'volume', 'pH', 'temperature']));
+  elements.downloadRealTimeDataButton.addEventListener('click', () => downloadCSV(realTimeData, 'real-time_data.csv', ['time', 'read', 'pH', 'temperature']));
+  elements.downloadExperimentDataButton.addEventListener('click', () => downloadCSV(experimentData, 'experiment_data.csv', ['time', 'read', 'volume', 'pH', 'temperature']));
   elements.downloadDerivativeDataButton.addEventListener('click', () => downloadCSV(derivativeData, 'derivative_data.csv', ['averageVolume', 'derivativeValue']));
   elements.readIntervalSelect.addEventListener('change', updateReadInterval);
   elements.maxPointsInput.addEventListener('change', updateRealTimeChart);
@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const data = { ...lastValidData, ...getCurrentDateTime(), read: ++readCount }; // Create a new data point
     realTimeData.push(data); // Add to real-time data array
-    updateTable(elements.realTimeTableBody, realTimeData, ['date', 'time', 'read', 'pH', 'temperature']); // Update real-time table
+    updateTable(elements.realTimeTableBody, realTimeData, ['time', 'read', 'pH', 'temperature']); // Update real-time table
     updateRealTimeChart(); // Update real-time chart
 
     toggleDownloadButton(elements.downloadRealTimeDataButton, realTimeData); // Enable download button if data exists
@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     experimentData.push(data); // Add to experiment data array
 
-    updateTable(elements.experimentTableBody, experimentData, ['date', 'time', 'read', 'volume', 'pH', 'temperature']); // Update experiment table
+    updateTable(elements.experimentTableBody, experimentData, ['time', 'read', 'volume', 'pH', 'temperature']); // Update experiment table
     updateChart(charts.experimentChart, experimentData, 'volume', 'pH'); // Update experiment chart
     updateDerivativeData(); // Update derivative data
     playBipSound(); // Play a sound
