@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   // DOM elements for interaction
   const elements = {
-    equipmentSelect: document.getElementById('equipment'), // Equipment dropdown
+    instrumentSelect: document.getElementById('instrument'), // Instrument dropdown
     toggleButton: document.getElementById('toggle-button'), // Connect/Disconnect button
     readIntervalSelect: document.getElementById('read-interval'), // Read interval dropdown
     realTimeChartCtx: document.getElementById('real-time-chart').getContext('2d'), // Real-time chart context
@@ -34,12 +34,12 @@ const charts = {
   derivativeChart: new Chart(elements.derivativeChartCtx, createChartConfig('Derivative Chart', 'Average Volume', 'Derivative', false))
 };
 
-  // Initialize Equipment Options
-  const equipmentList = [
+  // Initialize Instument Options
+  const instrumentList = [
     { name: "Lucadema - LUCA210 - Escala pH", baudRate: 9600, dataBits: 8, stopBits: 1, parity: "none" },
     { name: "pH Meter 2", baudRate: 19200, dataBits: 8, stopBits: 1, parity: "none" }
   ];
-  populateEquipmentOptions(equipmentList, elements.equipmentSelect);
+  populateInstrumentOptions(instrumentList, elements.instrumentSelect);
 
   // Event Listeners
   elements.toggleButton.addEventListener('click', toggleConnection);
@@ -67,14 +67,14 @@ const charts = {
     }
   }
 
-  // Connect to the selected equipment
+  // Connect to the selected instrument
   async function connect() {
-    const equipment = JSON.parse(elements.equipmentSelect.value); // Get selected equipment details
+    const instrument = JSON.parse(elements.instrumentSelect.value); // Get selected instrument details
     const serialOptions = {
-      baudRate: equipment.baudRate,
-      dataBits: equipment.dataBits,
-      stopBits: equipment.stopBits,
-      parity: equipment.parity
+      baudRate: instrument.baudRate,
+      dataBits: instrument.dataBits,
+      stopBits: instrument.stopBits,
+      parity: instrument.parity
     };
 
     try {
@@ -87,11 +87,11 @@ const charts = {
       isConnected = true;
     } catch (err) {
       console.error("Failed to connect:", err);
-      alert("Failed to connect to the equipment. Please check the connection and try again.");
+      alert("Failed to connect to the instrument. Please check the connection and try again.");
     }
   }
 
-  // Disconnect from the equipment
+  // Disconnect from the instrument
   async function disconnect() {
     if (reader) reader.releaseLock(); // Release the lock on the reader
     if (port) await port.close(); // Close the port
@@ -178,7 +178,7 @@ const charts = {
     toggleDownloadButton(elements.downloadExperimentDataButton, experimentData); // Enable download button if data exists
   }
 
-  // Parse the data string from the equipment
+  // Parse the data string from the instrument
   function parseData(dataStr) {
     const parts = dataStr.split(','); // Split data string into parts
     if (parts.length !== 2) return null; // Ensure data is valid
@@ -232,12 +232,12 @@ const charts = {
     button.disabled = data.length === 0; // Enable or disable button based on data length
   }
 
-  // Populate equipment options
-  function populateEquipmentOptions(equipmentList, selectElement) {
-    equipmentList.forEach(equipment => {
+  // Populate instrument options
+  function populateInstrumentOptions(instrumentList, selectElement) {
+    instrumentList.forEach(instrument => {
       const option = document.createElement('option'); // Create option element
-      option.value = JSON.stringify(equipment); // Set option value
-      option.text = equipment.name; // Set option text
+      option.value = JSON.stringify(instrument); // Set option value
+      option.text = instrument.name; // Set option text
       selectElement.add(option); // Add option to select element
     });
   }
