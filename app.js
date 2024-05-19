@@ -203,11 +203,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const pH2 = experimentData[i].pH;
 
       const averageVolume = (volume1 + volume2) / 2;
-      const derivativeValue = (pH2 - pH1) / (volume2 - volume1);
+      const derivativeValue = ((pH2 - pH1) / (volume2 - volume1) * 1000);
 
       derivativeData.push({
         averageVolume: averageVolume.toFixed(1), // Format to 1 decimal place
-        derivativeValue: derivativeValue.toFixed(3) // Format to 3 decimal places
+        derivativeValue: derivativeValue.toFixed(2) // Format to 3 decimal places
       });
     }
 
