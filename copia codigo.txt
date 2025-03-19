@@ -1,8 +1,3 @@
-// Defina a variável charts no escopo global
-let charts;
-
-
-
 document.addEventListener("DOMContentLoaded", () => {
   // DOM elements for interaction
   const elements = {
@@ -76,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize Instument Options
   const instrumentList = [
     {
-      name: "pH - Lucadema - LUCA210 ",
+      name: "Lucadema - LUCA210 - Escala pH",
       baudRate: 9600,
       dataBits: 8,
       stopBits: 1,
@@ -84,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
       readTimer:2000
     },
     {
-      name: "ORP MPA210/Lucadema",
+      name: "pH Meter 2",
       baudRate: 9600,
       dataBits: 8,
       stopBits: 1,
@@ -235,7 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
       y: data.pH,
     })); // Update chart data
     charts.realTimeChart.update(); // Refresh the chart
-    //console.log("chart",data.pH, data.read)
+    console.log("chart",data.pH, data.read)
   }
 
   // Update the charts and tables with the latest data
@@ -296,7 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "temperature",
     ]); // Update experiment table
     updateChart(charts.experimentChart, experimentData, "volume", "pH"); // Update experiment chart
-    updateDerivativeData(experimentData); // Update derivative data
+    updateDerivativeData(); // Update derivative data
     playBipSound(); // Play a sound
     addVisualFeedback(elements.addExperimentDataButton); // Provide visual feedback
     toggleDownloadButton(elements.downloadExperimentDataButton, experimentData); // Enable download button if data exists
@@ -326,21 +321,21 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
   // Update Derivative Data and Chart
-  function updateDerivativeData(experimentData) {
+  function updateDerivativeData() {
     if (experimentData.length < 2) return; // Ensure sufficient data exists
-  
+
     derivativeData = [];
-  
+
     for (let i = 1; i < experimentData.length; i++) {
       // Calculate derivatives
       const volume1 = experimentData[i - 1].volume;
       const volume2 = experimentData[i].volume;
       const pH1 = experimentData[i - 1].pH;
       const pH2 = experimentData[i].pH;
-  
+
       const averageVolume = (volume1 + volume2) / 2;
       const derivativeValue = ((pH2 - pH1) / (volume2 - volume1)) * 1000;
-  
+
       derivativeData.push({
         averageVolume: averageVolume.toFixed(1), // Format to 1 decimal place
         derivativeValue: derivativeValue.toFixed(2), // Format to 3 decimal places
